@@ -1,4 +1,4 @@
 qsort-vs-csort
 ==============
 
-qsort versus counting sort
+this is a comparison of time, which QSort (.NET implementation) and Counting Sort algorithms spend on different data sets
