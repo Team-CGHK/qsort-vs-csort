@@ -43,39 +43,26 @@ namespace CountingVsQSort
                     PerformTest(range, length);
             }
 
-            try {Console.ReadKey();} catch(IOException ex) {}
+            Console.ReadKey();
         }
 
         private static void PerformTest(int range, int length, int repeats = BigNumberOfRepeats)
         {
-            long qsortTime = 0,
-                 countingSortTime = 0;
-            for (int test = 0; test < repeats; ++test)
-            {
-                int[] dataSet = MakeDataSet(range, length);
-                TestSorting(Array.Sort, dataSet, ref qsortTime);
-                TestSorting(x => CountingSort(x), dataSet, ref countingSortTime);
-            }
             Console.WriteLine("Data set of {0} numbers [0, {1}], {2} repeats", length, range, repeats);
-            Console.WriteLine("QSort time: {0} ms;", qsortTime, qsortTime);
-            Console.WriteLine("CSort time: {0} ms;\n", countingSortTime, countingSortTime);
+            time.Restart();
+            for (int test = 0; test < repeats; ++test)
+                Array.Sort(MakeDataSet(range, length));
+            Console.WriteLine("QSort time: {0} ms;", time.ElapsedMilliseconds);
+            time.Restart();
+            for (int test = 0; test < repeats; ++test)
+                CountingSort(MakeDataSet(range, length));
+            Console.WriteLine("CSort time: {0} ms;\n", time.ElapsedMilliseconds);
         }
 
         delegate void Sorting(int[] data);
 
         static Stopwatch time = new Stopwatch();
         static Random rng = new Random();
-
-        static void TestSorting(Sorting method, int[] data, ref long totalTime)
-        {
-            time.Reset();
-            time.Start();
-
-            method(data);
-
-            time.Stop();
-            totalTime += time.ElapsedMilliseconds;
-        }
 
         static int[] MakeDataSet(int upperBound, int length)
         {
@@ -86,16 +73,14 @@ namespace CountingVsQSort
             return result;
         }
 
-        static int[] CountingSort(int[] data)
+        static void CountingSort(int[] data)
         {
             int[] counts = new int[data.Max()];
             for (int i = 0; i < 0; ++i)
                 ++counts[data[i]];
-            int[] result = new int[data.Length];
             for (int i = 0, pos = 0; i < counts.Length; ++i)
                 for (int j = 0; j < counts[i]; ++j)
-                    result[pos++] = i;
-            return result;
+                    data[pos++] = i;
         }
     }
 }
